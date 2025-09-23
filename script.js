@@ -1,61 +1,30 @@
-// Legend control
-var legend = L.control({position: 'bottomright'});
+// Initialize map centered on continental US
+var map = L.map('map').setView([39.8283, -98.5795], 4);
 
-// Define legend content for each layer
-var legendsContent = {
-    "County Summary": {
-        breaks: [1000, 5000, 10000, 50000, 100000],
-        colors: ["#ffffcc","#a1dab4","#41b6c4","#2c7fb8","#253494"],
-        title: "Total Voters"
-    },
-    "Precincts": {
-        breaks: [100, 500, 1000, 5000, 10000],
-        colors: ["#f2f0f7","#cbc9e2","#9e9ac8","#756bb1","#54278f"],
-        title: "Population"
-    },
-    "Alaska House Districts": {
-        breaks: [1000, 5000, 10000, 20000],
-        colors: ["#feedde","#fdbe85","#fd8d3c","#e6550d"],
-        title: "Voter Count"
-    }
-};
+// Add basemap
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  maxZoom: 19,
+  attribution: '© OpenStreetMap contributors'
+}).addTo(map);
 
-// Function to create legend HTML for a given layer
-function getLegendHtml(layerName) {
-    var content = legendsContent[layerName];
-    if (!content) return "";
-    var html = "<strong>" + layerName + ": " + content.title + "</strong><br>";
-    for (var i = 0; i < content.breaks.length; i++) {
-        html +=
-            '<i style="background:' + content.colors[i] + '; width: 18px; height: 18px; display: inline-block; margin-right:5px;"></i> ' +
-            (i === 0 ? "≤ " : content.breaks[i-1]+ " – ") + content.breaks[i] + '<br>';
-    }
-    return html;
+// Helper: color scale function
+function getColor(d, breaks, colors) {
+  for (var i = 0; i < breaks.length; i++) {
+    if (d <= breaks[i]) return colors[i];
+  }
+  return colors[colors.length - 1];
 }
 
-// Add legend container
-legend.onAdd = function(map) {
-    var div = L.DomUtil.create('div', 'legend');
-    div.innerHTML = ""; // start empty
-    return div;
-};
-legend.addTo(map);
-
-// Function to update legend based on visible layers
-function updateLegend() {
-    var div = document.querySelector('.legend');
-    div.innerHTML = "";
-
-    for (var name in overlayMaps) {
-        if (map.hasLayer(overlayMaps[name]) && legendsContent[name]) {
-            div.innerHTML += getLegendHtml(name) + "<br>";
-        }
-    }
+// County summary styling by total_voters
+function countyStyle(feature) {
+  var breaks = [1000, 5000, 10000, 50000, 100000]; // example breakpoints
+  var colors = ["#ffffcc","#a1dab4","#41b6c4","#2c7fb8","#253494"];
+  return {
+    color: "#333",
+    weight: 1,
+    fillOpacity: 0.7,
+    fillColor: getColor(feature.properties.total_voters, breaks, colors)
+  };
 }
 
-// Update legend when layers are added/removed
-map.on('overlayadd', updateLegend);
-map.on('overlayremove', updateLegend);
-
-// Initialize legend on page load
-updateLegend();
+// Alaska Hou
