@@ -1,16 +1,21 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <title>My Interactive Map</title>
+  <meta charset="UTF-8">
+  <title>Leaflet Test Map</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <style>
-    #map { height: 100vh; }
+    html, body { height: 100%; margin: 0; }
+    #map { height: 100%; width: 100%; }
   </style>
 </head>
 <body>
   <div id="map"></div>
+
+  <!-- Load Leaflet first -->
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+  <!-- Then your script -->
   <script src="script.js"></script>
 </body>
 </html>
