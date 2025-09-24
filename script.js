@@ -1,25 +1,17 @@
-mapboxgl.accessToken = 'YOUR_MAPBOX_TOKEN';
-var map = new mapboxgl.Map({
-  container: 'map',
-  style: 'mapbox://styles/mapbox/streets-v12',
-  center: [-81.6326, 38.3498],
-  zoom: 5
-});
+<div id="map" style="height:500px; width:100%;"></div>
 
-map.on('load', function () {
-  map.addSource('pollingPlaces', {
-    type: 'vector',
-    url: 'mapbox://yourusername.polling_places'
+<script>
+function initMap() {
+  const myCenter = { lat: 38.3498, lng: -81.6326 }; // Charleston, WV
+  const map = new google.maps.Map(document.getElementById("map"), {
+    zoom: 10,
+    center: myCenter,
   });
-
-  map.addLayer({
-    id: 'pollingPoints',
-    type: 'circle',
-    source: 'pollingPlaces',
-    'source-layer': 'polling_places',
-    paint: {
-      'circle-radius': 3,
-      'circle-color': '#e31a1c'
-    }
+  
+  new google.maps.Marker({
+    position: myCenter,
+    map: map,
+    title: "Hello from Charleston!",
   });
-});
+}
+</script>
