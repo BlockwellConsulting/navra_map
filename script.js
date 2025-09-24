@@ -1,23 +1,26 @@
-// Create map
+// Initialize the map centered on Charleston, WV
 var map = L.map('map').setView([38.3498, -81.6326], 5);
 
-// Basemap
+// Add OpenStreetMap basemap
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   maxZoom: 19,
   attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
 
-// Load GeoJSON layers
+// Load *one* GeoJSON file
 var pollingPlaces = new L.GeoJSON.AJAX("national_pollingplaces_navracompliant.geojson", {
   onEachFeature: function (feature, layer) {
-    layer.bindPopup("Polling Place");
+    if (feature.properties) {
+      layer.bindPopup(JSON.stringify(feature.properties));
+    }
+  },
+  pointToLayer: function (feature, latlng) {
+    return L.circleMarker(latlng, {
+      radius: 5,
+      fillColor: "red",
+      color: "black",
+      weight: 1,
+      fillOpacity: 0.8
+    });
   }
-}).addTo(map);
-
-var countySummary = new L.GeoJSON.AJAX("National_navra_county_summary.geojson", {
-  style: { color: "blue", weight: 2 }
-}).addTo(map);
-
-var alaskaHouse = new L.GeoJSON.AJAX("Alaska_navra_stateleg_summary.geojson", {
-  style: { color: "green", weight: 2 }
 }).addTo(map);
